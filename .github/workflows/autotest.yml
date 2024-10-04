@@ -1,0 +1,42 @@
+name: autotests
+
+on:
+  pull_request:
+  push:
+
+jobs:
+
+  autotest:
+    runs-on: ubuntu-latest
+    container: golang:1.22
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Download autotests binaries
+        uses: robinraju/release-downloader@v1.8
+        with:
+          repository: Yandex-Practicum/go-autotests
+          latest: true
+          fileName: "*"
+          out-file-path: .tools
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Setup autotest binary
+        run: |
+          chmod -R +x $GITHUB_WORKSPACE/.tools
+          mv $GITHUB_WORKSPACE/.tools/devopsmastertest /usr/local/bin/devopsmastertest
+
+      - name: Build script binary
+        run: |
+          go build -buildvcs=false -o srvmonitor
+
+      - name: Run autotest suite
+        run: |
+          echo -n "127.0.0.1 srv.msk01.gigacorp.local" | tee -a /etc/hosts > /dev/null
+          devopsmastertest \
+              -test.v \
+              -test.run=^TestLesson01$ \
+              -binary-path=./srvmonitor
+
