@@ -41,7 +41,7 @@ func main() {
 }
 
 func CreateStatsAnalyzer(loadThreshold, memoryThreshold, diskThreshold, networkThreshold int) func(serverStats ServerStats) {
-	analyze := func(stats ServerStats) {
+	return func(stats ServerStats) {
 		memoryUsagePercent := int(float64(stats.MemoryUsage) / float64(stats.MemoryCapacity) * 100)
 		diskUsagePercent := int(float64(stats.DiskUsage) / float64(stats.DiskCapacity) * 100)
 		networkUsagePercent := int(float64(stats.NetworkUsage) / float64(stats.NetworkCapacity) * 100)
@@ -61,7 +61,6 @@ func CreateStatsAnalyzer(loadThreshold, memoryThreshold, diskThreshold, networkT
 			fmt.Printf("Network bandwidth usage high: %d Mbit/s available\n", availableBandwidth)
 		}
 	}
-	return analyze
 }
 
 func ParseStats(rawStats []byte) ServerStats {
@@ -77,7 +76,7 @@ func ParseStats(rawStats []byte) ServerStats {
 }
 
 func CreateServerPoller(url string, reqTimeout time.Duration, reqFreq time.Duration, errorThreshold int) func() chan []byte {
-	poller := func() chan []byte {
+	return func() chan []byte {
 		responsesChan := make(chan []byte, 3)
 		client := http.Client{Timeout: reqTimeout}
 		errorCounter := 0
@@ -112,5 +111,4 @@ func CreateServerPoller(url string, reqTimeout time.Duration, reqFreq time.Durat
 		}()
 		return responsesChan
 	}
-	return poller
 }
