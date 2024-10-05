@@ -19,5 +19,5 @@ func main() {
 }
 
 func statsHandler(response http.ResponseWriter, request *http.Request) {
-	_, _ = response.Write([]byte("12,21474836481934,1073741824,5497558138880,4398046511104,104857600,6291456\n"))
+	_, _ = response.Write([]byte("50,21474836481934,19474836481934,5497558138880,4897558138880,6291456,5291456\n"))
 }
