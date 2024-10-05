@@ -47,17 +47,17 @@ func CreateStatsAnalyzer(loadThreshold, memoryThreshold, diskThreshold, networkT
 		networkUsagePercent := int(float64(stats.NetworkUsage) / float64(stats.NetworkCapacity) * 100)
 
 		if stats.LoadAverage > loadThreshold {
-			fmt.Printf("Load Average is too high: %d\n", loadThreshold)
+			fmt.Printf("Load Average is too high: %d\n", stats.LoadAverage)
 		}
 		if memoryUsagePercent > memoryThreshold {
 			fmt.Printf("Memory usage too high: %d%%\n", memoryUsagePercent)
 		}
 		if diskUsagePercent > diskThreshold {
-			availableSpace := (stats.DiskCapacity - stats.DiskUsage) / 1024
+			availableSpace := (stats.DiskCapacity - stats.DiskUsage) / 1024 / 1024
 			fmt.Printf("Free disk space is too low: %d Mb left\n", availableSpace)
 		}
 		if networkUsagePercent > networkThreshold {
-			availableBandwidth := (stats.NetworkCapacity - stats.NetworkUsage) / 1024 * 8
+			availableBandwidth := (stats.NetworkCapacity - stats.NetworkUsage) / 1000 / 1000
 			fmt.Printf("Network bandwidth usage high: %d Mbit/s available\n", availableBandwidth)
 		}
 	}
