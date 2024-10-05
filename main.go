@@ -13,7 +13,7 @@ const (
 	RequestTimout     = 2 * time.Second
 	RequestsFrequency = 300 * time.Millisecond
 	ErrorThreshold    = 3
-	ServerUrl         = "http://srv.msk01.gigacorp.local/_stats"
+	ServerURL         = "http://srv.msk01.gigacorp.local/_stats"
 	LoadThreshold     = 30
 	MemoryThreshold   = 80
 	DiskThreshold     = 90
@@ -31,7 +31,7 @@ type ServerStats struct {
 }
 
 func main() {
-	poll := CreateServerPoller(ServerUrl, RequestTimout, RequestsFrequency, ErrorThreshold)
+	poll := CreateServerPoller(ServerURL, RequestTimout, RequestsFrequency, ErrorThreshold)
 	analyze := CreateStatsAnalyzer(LoadThreshold, MemoryThreshold, DiskThreshold, NetworkThreshold)
 
 	for response := range poll() {
@@ -106,6 +106,7 @@ func CreateServerPoller(url string, reqTimeout time.Duration, reqFreq time.Durat
 					fmt.Printf("failed to parse response %s\n", err)
 					continue
 				}
+				_ = response.Body.Close()
 				responsesChan <- body
 			}
 		}()
